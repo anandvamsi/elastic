@@ -1,0 +1,56 @@
+Elasticsearch 
+-----------------
+
+###Elastic configration
+
+cluster.name
+cluster.name: This sets up the name of the cluster. Only nodes with the same name can join together.
+
+node.name: If not defined, this is automatically assigned by Elasticsearch.
+network.host: defines the IP of your machine to bind the node. If your server is on different LANs
+
+discovery.zen.ping.unicast.hosts: allows you to define a list of hosts (with ports or a port range) to be used to discover other nodes to join the cluster. The preferred port is the transport one, usually 9300 
+
+path.data: paramter is the most import one. This allows to define one more directories(in different disk)
+
+path.work:parameter is a location in which Elasticsearch stores temporary files.
+
+path.log: parameter is where log files are put
+
+path.plugins:
+
+index.number_of_shards: which controls the standard number of shards for a new created index.
+index.number_of_replicas:  which controls the initial number of replicas.
+
+
+
+####Security setting in elasticsearch 
+
+To allow Elasticsearch to manage a large number of files, you need to increment the number of file descriptors (number of files) that a user can manage
+
+
+/etc/security/limits.conf
+elasticsearch - nofile 65536
+elasticsearch - memlock unlimited
+
+
+###To control memory swapping, you need to set up the following parameter in elasticsearch.yml
+bootstrap.memory_lock: true
+
+If you don't set bootstrap.memory_lock: true, Elasticsearch dumps the whole process memory on disk and defragments it back in memory, freezing the system. With this setting, the defragmentation step is done all in memory, with a huge performance boost.
+
+
+
+##To fix the memory usage size of the Elasticsearch server, we need to set up the same values for Xms and Xmx
+-Xms1g
+-Xmx1g
+
+The Xms and Xmx memory settings prevent Elasticsearch from swapping memory and give a performance boost in an environment. This setting is required because, during indexing and searching, Elasticsearch creates and destroys a lot of objects in memory
+
+##node.master: true
+Set up whether the node can be a master or not
+
+#node.data: true
+arameter allows you to store data in the node
+
+#To have a High Availability (HA) cluster, you need at least three nodes that are masters with the value of minimum_master_nodes set to 2.
