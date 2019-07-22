@@ -2,7 +2,7 @@
 
 ##rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
 
-##[root@node1 yum.repos.d]# cat > elasticsearch.repo
+##[root@node1 yum.repos.d]# cat > /etc/yum.repos.d/elasticsearch.repo
 [elasticsearch-7.x]
 name=Elasticsearch repository for 7.x packages
 baseurl=https://artifacts.elastic.co/packages/7.x/yum
