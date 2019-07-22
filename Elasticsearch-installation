@@ -12,6 +12,7 @@ enabled=1
 autorefresh=1
 type=rpm-md
 
+#yum install elasticsearch -y
 
 ##systemctl start elasticserach
 
