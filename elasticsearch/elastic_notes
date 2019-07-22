@@ -9,6 +9,11 @@ cluster.name: This sets up the name of the cluster. Only nodes with the same nam
 node.name: If not defined, this is automatically assigned by Elasticsearch.
 network.host: defines the IP of your machine to bind the node. If your server is on different LANs
 
+allows defining a name for the node. If you have a lot of nodes on different machines, it is useful to set their names to something meaningful in order to easily locate them. Using a valid name is easier to remember than a generated name such as fyBySLMcR3uqKiYC32P5Sg.
+
+ Generally, a node name is the same as a host server name for easy maintenance.
+
+
 discovery.zen.ping.unicast.hosts: allows you to define a list of hosts (with ports or a port range) to be used to discover other nodes to join the cluster. The preferred port is the transport one, usually 9300 
 
 path.data: paramter is the most import one. This allows to define one more directories(in different disk)
@@ -51,6 +56,115 @@ The Xms and Xmx memory settings prevent Elasticsearch from swapping memory and g
 Set up whether the node can be a master or not
 
 #node.data: true
-arameter allows you to store data in the node
+parameter allows you to store data in the node
 
 #To have a High Availability (HA) cluster, you need at least three nodes that are masters with the value of minimum_master_nodes set to 2.
+
+
+
+
+Designing a ES cluster
+-----------------------------
+How much data are you working with?
+How many searches will you be processing?
+How complex are your searches?
+How much resources will each node have to work with?
+How many indexes/applications will you be working with?
+
+Default setting 
+by default, the number of shards is 5 and the number of replicas is 1
+
+
+
+
+Two ports required 
+9300: This port is used for internal intranode communication.
+9200: This port is used for the HTTP REST API.
+
+If these port numbers are already bound, Elasticsearch automatically increments the port number and tries to bind on them until a port is available (that is, 9201, 9202, and so on
+
+
+
+
+
+Setting up of elasticsearch logging 
+------------------------------------
+log4j2.properties
+rootLogger.level = info
+rootLogger.level = debug
+
+
+
+
+
+
+
+
+-----------------------------------
+Installation procedure
+
+##rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
+
+##[root@node1 yum.repos.d]# cat > elasticsearch.repo
+[elasticsearch-7.x]
+name=Elasticsearch repository for 7.x packages
+baseurl=https://artifacts.elastic.co/packages/7.x/yum
+gpgcheck=1
+gpgkey=https://artifacts.elastic.co/GPG-KEY-elasticsearch
+enabled=1
+autorefresh=1
+type=rpm-md
+
+
+##systemctl start elasticserach
+
+##[root@node1 yum.repos.d]# curl -X GET 'http://localhost:9200'
+{
+  "name" : "node1",
+  "cluster_name" : "elasticsearch",
+  "cluster_uuid" : "rqcWtVKtSj-t68XbGiejsQ",
+  "version" : {
+    "number" : "7.2.0",
+    "build_flavor" : "default",
+    "build_type" : "rpm",
+    "build_hash" : "508c38a",
+    "build_date" : "2019-06-20T15:54:18.811730Z",
+    "build_snapshot" : false,
+    "lucene_version" : "8.0.0",
+    "minimum_wire_compatibility_version" : "6.8.0",
+    "minimum_index_compatibility_version" : "6.0.0-beta1"
+  },
+  "tagline" : "You Know, for Search"
+}
+[root@node1 yum.repos.d]#
+
+Two
+
+
+#Create a index
+ curl -XPUT "http://localhost:9200/employee"
+
+#TO list the index
+[root@node1 opt]# curl -XGET http://localhost:9200/_cat/indices?v
+health status index    uuid                   pri rep docs.count docs.deleted store.size pri.store.size
+yellow open   books    I8Zcx3VvR8aRrFDidOEqXg   1   1          0            0       230b           230b
+yellow open   employee Dxb9NFNjQVCtKrm00Wx7ag   1   1          0            0       230b           230b
+
+
+
+
+#Inserting data to elasticsearch
+Download the data to elasticsearch
+curl -O https://download.elastic.co/demos/kibana/gettingstarted/7.x/logs.jsonl.gz
+gunzip logs.jsonl.gz
+curl -H 'Content-Type: application/x-ndjson' -XPOST 'localhost:9200/_bulk?pretty' --data-binary @logs.jsonl
+
+
+
+[root@node1 opt]# curl -XGET http://localhost:9200/_cat/indices?v
+health status index               uuid                   pri rep docs.count docs.deleted store.size pri.store.size
+yellow open   logstash-2015.05.19 JIohpLNbRGmQkobr67liTw   1   1       4624            0     17.7mb         17.7mb
+yellow open   books               I8Zcx3VvR8aRrFDidOEqXg   1   1          0            0       283b           283b
+yellow open   logstash-2015.05.20 aXM9nZz7TlOUaHUj9joMPA   1   1       4750            0     18.4mb         18.4mb
+yellow open   logstash-2015.05.18 dshO3QMiQx2bnOgi7nbY5w   1   1       4631            0     18.3mb         18.3mb
+yellow open   employee            Dxb9NFNjQVCtKrm00Wx7ag   1   1          0            0       283b           283b
