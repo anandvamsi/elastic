@@ -1,0 +1,36 @@
+#Single node installation 
+
+##rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
+
+##[root@node1 yum.repos.d]# cat > elasticsearch.repo
+[elasticsearch-7.x]
+name=Elasticsearch repository for 7.x packages
+baseurl=https://artifacts.elastic.co/packages/7.x/yum
+gpgcheck=1
+gpgkey=https://artifacts.elastic.co/GPG-KEY-elasticsearch
+enabled=1
+autorefresh=1
+type=rpm-md
+
+
+##systemctl start elasticserach
+
+##[root@node1 yum.repos.d]# curl -X GET 'http://localhost:9200'
+{
+  "name" : "node1",
+  "cluster_name" : "elasticsearch",
+  "cluster_uuid" : "rqcWtVKtSj-t68XbGiejsQ",
+  "version" : {
+    "number" : "7.2.0",
+    "build_flavor" : "default",
+    "build_type" : "rpm",
+    "build_hash" : "508c38a",
+    "build_date" : "2019-06-20T15:54:18.811730Z",
+    "build_snapshot" : false,
+    "lucene_version" : "8.0.0",
+    "minimum_wire_compatibility_version" : "6.8.0",
+    "minimum_index_compatibility_version" : "6.0.0-beta1"
+  },
+  "tagline" : "You Know, for Search"
+}
+[root@node1 yum.repos.d]#
