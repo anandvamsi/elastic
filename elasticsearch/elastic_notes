@@ -168,3 +168,115 @@ yellow open   books               I8Zcx3VvR8aRrFDidOEqXg   1   1          0     
 yellow open   logstash-2015.05.20 aXM9nZz7TlOUaHUj9joMPA   1   1       4750            0     18.4mb         18.4mb
 yellow open   logstash-2015.05.18 dshO3QMiQx2bnOgi7nbY5w   1   1       4631            0     18.3mb         18.3mb
 yellow open   employee            Dxb9NFNjQVCtKrm00Wx7ag   1   1          0            0       283b           283b
+
+
+
+
+#Create a index movie with mappings
+[root@node1 opt]# curl -H "Content-Type: application/json" -XPUT 127.0.0.1:9200/movies -d '
+{
+"mappings" : {
+
+             "properties" : {
+                      "year" : { "type" : "date" }
+                            }
+                  }
+            }
+'
+{"acknowledged":true,"shards_acknowledged":true,"index":"movie"}l
+
+
+General syntax
+curl -XPOST "http://[localhost]:9200/indexname/typename/optionalUniqueId" -d '{ "field" : "value" }'
+
+
+
+#TO list the data in elastic
+curl -H "Content-Type: application/json"  http://localhost:9200/movie/_search
+
+
+#To List all the items in movie index
+./curl http://localhost:9200/movie/_search?pretty
+
+
+#To retrive only one specific document from index
+[root@node1 bin]# ./curl http://localhost:9200/movies/_doc/1924/?pretty
+{
+  "_index" : "movies",
+  "_type" : "_doc",
+  "_id" : "1924",
+  "_version" : 1,
+  "_seq_no" : 4,
+  "_primary_term" : 1,
+  "found" : true,
+  "_source" : {
+    "id" : "1924",
+    "title" : "Plan 9 from Outer Space",
+    "year" : 1959,
+    "genre" : [
+      "Horror",
+      "Sci-Fi"
+    ]
+  }
+}
+
+
+
+
+json bulk insert in Elastic
+
+curl -H "Content-Type: application/json" -XPUT 127.0.0.1:9200/_bulk?pretty --data-binary @movies.json
+[root@node1 es_data]# cat movies.json
+{ "create" : { "_index" : "movies", "_id" : "135569" } }
+{ "id": "135569", "title" : "Star Trek Beyond", "year":2016 , "genre":["Action", "Adventure", "Sci-Fi"] }
+{ "create" : { "_index" : "movies", "_id" : "122886" } }
+{ "id": "122886", "title" : "Star Wars: Episode VII - The Force Awakens", "year":2015 , "genre":["Action", "Adventure", "Fantasy", "Sci-Fi", "IMAX"] }
+{ "create" : { "_index" : "movies","_id" : "109487" } }
+{ "id": "109487", "title" : "Interstellar", "year":2014 , "genre":["Sci-Fi", "IMAX"] }
+{ "create" : { "_index" : "movies","_id" : "58559" } }
+{ "id": "58559", "title" : "Dark Knight, The", "year":2008 , "genre":["Action", "Crime", "Drama", "IMAX"] }
+{ "create" : { "_index" : "movies","_id" : "1924" } }
+{ "id": "1924", "title" : "Plan 9 from Outer Space", "year":1959 , "genre":["Horror", "Sci-Fi"] }
+[root@node1 es_data]#
+
+
+
+###Updating the document
+updating the doucment that is alredy index using _version
+when you update a new document a new document is created with an incremented_version
+old version will mark for deletion 
+
+
+#Updating the document 
+[root@node1 bin]# ./curl http://localhost:9200/movies/_doc/1924/_update -d '
+> {
+>       "doc": {
+>                "title": "Intersteller woo"
+>             }
+> }'
+{"_index":"movies","_type":"_doc","_id":"1924","_version":2,"result":"updated","_shards":{"total  
+
+Check the verion is update to 2 ,Now try to retrive the data to same iD
+
+[root@node1 bin]# ./curl http://localhost:9200/movies/_doc/1924?pretty
+{
+  "_index" : "movies",
+  "_type" : "_doc",
+  "_id" : "1924",
+  "_version" : 2,
+  "_seq_no" : 5,
+  "_primary_term" : 1,
+  "found" : true,
+  "_source" : {
+    "id" : "1924",
+    "title" : "Intersteller woo",
+    "year" : 1959,
+    "genre" : [
+      "Horror",
+      "Sci-Fi"
+    ]
+  }
+}
+
+
+Note: "Interstell has been moved to Interstell woo"
