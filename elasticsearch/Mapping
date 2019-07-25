@@ -1,0 +1,146 @@
+Mapping 
+Mapping is a very important concept in Elasticsearch, as it defines how the search engine should process a document and its fields
+
+Indexing
+This is the action to receive a document and to process it and store it in an index
+
+
+Searching
+This is the action to retrieve the data from the index
+
+Regarding Index,Document 
+An index consists of one or more Documents, and a Document consists of one or more Fields.
+
+In database terminology, a Document corresponds to a table row, and a Field corresponds to a table column 
+
+
+####Deletion of mappings
+There is no delete operation for mapping. It's not possible to delete a single mapping from an index. To remove or change a mapping, you need to manage the following steps:
+
+Create a new index with the new or modified mapping.
+Reindex all the records.
+Delete the old index with an incorrect mapping.
+
+
+
+##Create a index with mappings
+
+[root@node1 bin]# ./curl -XPUT 127.0.0.1:9200/myindex/_mapping -d '
+{
+  "properties": {
+    "id": {
+      "type": "keyword",
+      "store": true
+    },
+    "date": {
+      "type": "date",
+      "store": false
+    },
+    "customer_id": {
+      "type": "keyword",
+      "store": true
+    },
+    "sent": {
+      "type": "boolean"
+    },
+    "name": {
+      "type": "text"
+    },
+    "quantity": {
+      "type": "integer"
+    },
+    "vat": {
+      "type": "double",
+      "index": false
+    }
+  }
+}'
+{"acknowledged":true}
+
+
+
+
+
+
+
+####To view the mappings 
+/curl -XGET localhost:9200/myindex/_mapping?pretty
+{
+  "myindex" : {
+    "mappings" : {
+      "properties" : {
+        "customer_id" : {
+          "type" : "keyword",
+          "store" : true
+        },
+        "date" : {
+          "type" : "date"
+        },
+        "id" : {
+          "type" : "keyword",
+          "store" : true
+        },
+        "name" : {
+          "type" : "text"
+        },
+        "quantity" : {
+          "type" : "integer"
+        },
+        "sent" : {
+          "type" : "boolean"
+        },
+        "vat" : {
+          "type" : "double",
+          "index" : false
+        }
+      }
+    }
+  }
+}
+
+
+
+Reindexing the data from from first index to second index
+##Syntax
+POST /_reindex?pretty=true
+{
+  "source": {
+    "index": "movie"
+  },
+  "dest": {
+    "index": "movies"
+  }
+}
+
+
+Example
+[root@node1 bin]# ./curl -XPOST localhost:9200/_reindex?pretty=true -d '
+{
+ "source": {
+    "index": "movie"
+  },
+  "dest": {
+    "index": "movies"
+  }
+}'
+{
+  "took" : 171,
+  "timed_out" : false,
+  "total" : 3,
+  "updated" : 0,
+  "created" : 3,
+  "deleted" : 0,
+  "batches" : 1,
+  "version_conflicts" : 0,
+  "noops" : 0,
+  "retries" : {
+    "bulk" : 0,
+    "search" : 0
+  },
+  "throttled_millis" : 0,
+  "requests_per_second" : -1.0,
+  "throttled_until_millis" : 0,
+  "failures" : [ ]
+}
+
+This will copy all the document in the movie to movies 
