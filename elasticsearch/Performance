@@ -1,0 +1,269 @@
+Refreshing the index
+----------------------------
+Elasticsearch allows the user to control the state of the searcher using a forced refresh on an index. If not forced, the newly indexed document will only be searchable after a fixed time interval(usually 1 second).
+
+Near real-time (NRT) capabilities are automatically managed by Elasticsearch, which automatically refreshes the indices every second if data is changed in them.
+
+
+
+/curl -XGET 127.0.0.1:9200/myindex/_refresh?pretty
+{
+  "_shards" : {
+    "total" : 3,
+    "successful" : 1,
+    "failed" : 0
+  }
+}
+
+
+Good pratice:
+A good practice is to disable the refresh interval (set-1) during a big bulk indexing and to restore the default behavior after it.
+
+-Before bulk insertion
+PUT /myindex/_settings
+{"index":{"refresh_interval": "-1"}}
+
+-After bulk insertion
+PUT /myindex/_settings
+{"index":{"refresh_interval": "1s"}}
+
+
+
+
+
+Flusing index
+---------------------
+
+For performance reasons, Elasticsearch stores some data in memory and on a transaction log. If we want to free memory, we need to empty the transaction log, and to be sure that our data is safely written on disk, we need to flush an index.
+
+- When we need to shut down a node to prevent stale data
+- To have all the data in a safe state (for example, after a big indexing operation to have all the data flushed and refreshed)
+
+
+[root@node1 bin]# ./curl -XPOST localhost:9200/movie/_flush?pretty
+{
+  "_shards" : {
+    "total" : 2,
+    "successful" : 1,
+    "failed" : 0
+  }
+}
+
+
+
+
+
+ForceMerge an index
+------------------------
+
+The Elasticsearch core is based on Lucene, which stores the data in segments on disk. During the life of an index, a lot of segments are created and changed. With the increase of segment numbers, the speed of searching is decreased due to the time required to read all of them. The ForceMerge operation allows us to consolidate the index for faster searching performance and reducing segments.
+
+[root@node1 bin]# ./curl -XPOST localhost:9200/movie/_forcemerge?pretty
+{
+  "_shards" : {
+    "total" : 2,
+    "successful" : 1,
+    "failed" : 0
+  }
+}
+
+
+Internally, Elasticsearch has a merger, which tries to reduce the number of segments, but it's designed to improve the index performances rather than search performances. The forcemerge operation in Lucene tries to reduce the segments in an IO-heavy way by removing unused ones, purging deleted documents, and rebuilding the index with a minimal number of segments
+
+
+#Shrinking the index
+There will be the wrong number of shards during the initial design sizing. Often, sizing the shards without knowing the correct data or text distribution tends to oversize the number of shards
+
+
+
+
+#Checking if the index exist
+
+
+[root@node1 bin]# ./curl HEAD  -i localhost:9200/movies?pretty
+curl: (6) Could not resolve host: HEAD; Unknown error
+HTTP/1.1 200 OK
+content-type: application/json; charset=UTF-8
+content-length: 867
+
+{
+  "movies" : {
+    "aliases" : { },
+    "mappings" : {
+      "properties" : {
+        "genre" : {
+          "type" : "text",
+          "fields" : {
+            "keyword" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            }
+          }
+        },
+        "title" : {
+          "type" : "text",
+          "fields" : {
+            "keyword" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            }
+          }
+        },
+        "year" : {
+          "type" : "long"
+        }
+      }
+    },
+    "settings" : {
+      "index" : {
+        "creation_date" : "1563966980715",
+        "number_of_shards" : "1",
+        "number_of_replicas" : "1",
+        "uuid" : "X9RmJ5YcRUWDjSxOiMjQMw",
+        "version" : {
+          "created" : "7020099"
+        },
+        "provided_name" : "movies"
+      }
+    }
+  }
+}
+
+A 404 means it does not exist,
+ and 200 means it does.
+
+
+
+ #Alias in index
+Real-world applications have a lot of indices and queries that span more indices. This scenario requires defining all the indices' names on which queries are based; aliases allow grouping of them under a common name
+
+Log indices divided by date (that is, log_YYMMDD) for which we want to create an alias for the last week, the last month, today, yesterday, and so on. This pattern is commonly used in log applications such as Logstash
+
+Collecting website contents in several indices (New York Times, The Guardian, ...) for those we want to be referred to by the index alias sites.
+
+Aliases are mainly functional structures that simply manage indices when data is stored in multiple indices.
+
+
+Syntax
+PUT /{index}/_alias/{name}
+
+
+ #[root@node1 bin]# ./curl -XPUT 127.0.0.1:9200/movies/_alias/mymovies
+{"acknowledged":true}[root@node1 bin]#
+
+
+
+#To PUT the alias 
+./curl -XGET 127.0.0.1:9200/movies/_alias?pretty
+{
+  "movies" : {
+    "aliases" : {
+      "mymovies" : { }
+    }
+  }
+}
+
+
+#To list all the index with same alias
+
+root@node1 bin]# ./curl -XGET 127.0.0.1:9200/_alias/mymovies?pretty
+{
+  "movie" : {
+    "aliases" : {
+      "mymovies" : { }
+    }
+  },
+  "employee" : {
+    "aliases" : {
+      "mymovies" : { }
+    }
+  },
+  "movies" : {
+    "aliases" : {
+      "mymovies" : { }
+    }
+  }
+}
+
+Note: Here the mymovies is the alias name
+
+
+#Wildcards in the alias
+
+[root@node1 bin]# ./curl -XGET 127.0.0.1:9200/_alias/mymo*?pretty
+{
+  "movie" : {
+    "aliases" : {
+      "mymovies" : { }
+    }
+  },
+  "employee" : {
+    "aliases" : {
+      "mymovies" : { }
+    }
+  },
+  "movies" : {
+    "aliases" : {
+      "mymovies" : { }
+    }
+  }
+}
+
+
+
+#To delete a alias
+]# ./curl -XDELETE 127.0.0.1:9200/movies/_alias/mymovies
+{"acknowledged":true}[root@node1 bin]#
+
+
+
+Rolling Index
+--------------------------------------------------------------------------
+When using a system that manages logs, it is very common to use rolling files for your log entries. By using this idea, we can have indices that are similar to rolling files.
+
+We can define some conditions to be checked and leave it to Elasticsearch to roll new indices automatically and refer the use of an alias just to avirtualindex.
+
+
+The rolling index is a special alias that manages the auto-creation of new indices when one of the conditions is matche
+
+
+Step1:
+ ./curl -XPUT 127.0.0.1:9200/mydataing12 -d '
+{
+	"aliases" : {
+		"log_writes" : {}
+		}
+}'
+
+{"acknowledged":true,
+"shards_acknowledged":true,
+"index":"mydataing"}
+
+Step2:
+
+[root@node1 bin]# ./curl -XPOST 127.0.0.1:9200/logs_write/_rollover -d '
+{
+  "conditions": {
+    "max_age": "7d",
+    "max_docs": 10
+      },
+  "settings": {
+    "index.number_of_shards": 3
+  }
+}'
+
+{"acknowledged":false,"shards_acknowledged":false,"old_index":"mylogs-000001","new_index":"mylogs-000002","rolled_over":false,"dry_run":false,"conditions":{"[max_docs: 10]":false,"[max_age: 7d]":false}
+
+
+
+
+ElasticHQ Intallation 
+--------------------------
+https://github.com/ElasticHQ/elasticsearch-HQ
+
+yum install python3.6
+yum install install python-pip3.6
+clone the code
+pip3.6 install -r requirements.txt
+
+http://localhost:5000
