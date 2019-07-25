@@ -1,5 +1,10 @@
 Elasticsearch 
 -----------------
+what is indexing
+Indexing means storing one or more documents in an index: a similar concept to inserting records in a relational database.
+
+
+
 
 ###Elastic configration
 
@@ -26,6 +31,9 @@ path.plugins:
 
 index.number_of_shards: which controls the standard number of shards for a new created index.
 index.number_of_replicas:  which controls the initial number of replicas.
+
+index.auto_expand_replicas: This allows you to define a dynamic number of replicas related to the number of shards
+
 
 
 
@@ -144,6 +152,32 @@ Two
 #Create a index
  curl -XPUT "http://localhost:9200/employee"
 
+##if you are trying to create a index already exists
+[root@node1 bin]# ./curl -XPUT localhost:9200/myindex
+{"error":{"root_cause":[{"type":"resource_already_exists_exception","reason":"index [myindex/Gec-8BGLRwWvsSIwTc8iUw] already exists","index_uuid":"Gec-8BGLRwWvsSIwTc8iUw","index":"myindex"}],"type":"resource_already_exists_exception","reason":"index [myindex/Gec-8BGLRwWvsSIwTc8iUw] already exists","index_uuid":"Gec-8BGLRwWvsSIwTc8iUw","index":"myindex"},"status":400}[root@node1 bin]#
+
+
+number_of_shards, which controls the number of shards that compose the index
+each shard can hold two raised to 32 index whole.
+
+#Delete a index
+#delete a index 
+./curl -XDELETE localhost:9200/myindex
+
+
+#How the deletion works::
+When an index is deleted, all the data related to the index is removed from the disk and is lost
+
+The deleting process is composed of two steps: first, the cluster is updated, and then the shards are deleted from the storage. This operation is very quick; in a traditional filesystem, it is implemented as a recursive delete.	
+
+In production, it is good practice to disable the all-indices deletion by adding the following line to elasticsearch.yml
+action.destructive_requires_name:true
+
+How GET request works
+Internally, Elasticsearch spreads the get in parallel on several shards and collects the results to return to the user.
+
+
+
 #TO list the index
 [root@node1 opt]# curl -XGET http://localhost:9200/_cat/indices?v
 health status index    uuid                   pri rep docs.count docs.deleted store.size pri.store.size
@@ -171,6 +205,51 @@ yellow open   employee            Dxb9NFNjQVCtKrm00Wx7ag   1   1          0     
 
 
 
+#Cluster health 
+[root@node1 bin]# ./curl -XGET localhost:9200/_cluster/health?pretty
+{
+  "cluster_name" : "elasticsearch",
+  "status" : "yellow",
+  "timed_out" : false,
+  "number_of_nodes" : 1,
+  "number_of_data_nodes" : 1,
+  "active_primary_shards" : 8,
+  "active_shards" : 8,
+  "relocating_shards" : 0,
+  "initializing_shards" : 0,
+  "unassigned_shards" : 8,
+  "delayed_unassigned_shards" : 0,
+  "number_of_pending_tasks" : 0,
+  "number_of_in_flight_fetch" : 0,
+  "task_max_waiting_in_queue_millis" : 0,
+  "active_shards_percent_as_number" : 50.0
+}
+
+
+#image settings
+
+/curl -XGET lo./curl -XGET localhost:9200/movie/_settings?pretty
+{
+  "movie" : {
+    "settings" : {
+      "index" : {
+        "creation_date" : "1563888534782",
+        "number_of_shards" : "1",
+        "number_of_replicas" : "1",
+        "uuid" : "4EZ738mQRseKhDx3lOgznQ",
+        "version" : {
+          "created" : "7020099"
+        },
+        "provided_name" : "movie"
+      }
+    }
+  }	
+
+
+
+
+
+
 
 #Create a index movie with mappings
 [root@node1 opt]# curl -H "Content-Type: application/json" -XPUT 127.0.0.1:9200/movies -d '
@@ -184,6 +263,10 @@ yellow open   employee            Dxb9NFNjQVCtKrm00Wx7ag   1   1          0     
             }
 '
 {"acknowledged":true,"shards_acknowledged":true,"index":"movie"}l
+
+
+
+
 
 
 General syntax
@@ -282,6 +365,10 @@ Check the verion is update to 2 ,Now try to retrive the data to same iD
 Note: "Interstell has been moved to Interstell woo"
 
 
+##Deleting the document in the elasticserach 
+we need to user _DELETE
+
+--Before deletion of the document
 [root@node1 bin]# ./curl http://localhost:9200/movies/_doc/1924?pretty
 {
   "_index" : "movies",
@@ -301,10 +388,14 @@ Note: "Interstell has been moved to Interstell woo"
     ]
   }
 }
+
+--Deleting the document
 [root@node1 bin]# ./curl -XDELETE 127.0.0.1:9200/movies/_doc/1924
 {"_index":"movies","_type":"_doc","_id":"1924","_version":3,"result":"deleted","_shards":{"total":2,"successful":1,"failed":0},"_seq_no":6,"_primary_term":1}[root@node1 bin]#
 [root@node1 bin]#
 [root@node1 bin]#
+
+--After deleting the document
 [root@node1 bin]# ./curl http://localhost:9200/movies/_doc/1924?pretty
 {
   "_index" : "movies",
@@ -313,3 +404,39 @@ Note: "Interstell has been moved to Interstell woo"
   "found" : false
 }
 [root@node1 bin]#
+
+
+
+#Searching the data based on the keywork
+bin]# ./curl http://localhost:9200/movies/_search?q=Dark
+
+
+{"took":1,"timed_out":false,"_shards":{"total":1,"successful":1,"skipped":0,"failed":0},"hits":{"total":{"value":1,"relation":"eq"},"max_score":1.5169398,"hits":[{"_index":"movies","_type":"_doc","_id":"58559","_score":1.5169398,"_source":{ "id": "58559", "title" : "Dark Knight, The", "year":2008 , "genre":["Action", "Crime", "Drama", "IMAX"] }
+
+
+
+#Updating settings of index
+[root@node1 bin]# ./curl -XPUT 127.0.0.1:9200/myindex/_settings -d '
+{
+    "index" : {
+        "number_of_replicas" : 2
+    }
+}'
+
+[root@node1 bin]# ./curl -XGET 127.0.0.1:9200/myindex/_settings?pretty
+{
+  "myindex" : {
+    "settings" : {
+      "index" : {
+        "creation_date" : "1563965279536",
+        "number_of_shards" : "1",
+        "number_of_replicas" : "2",
+        "uuid" : "Zg0Kbw1bT1aGf-duSN5JzA",
+        "version" : {
+          "created" : "7020099"
+        },
+        "provided_name" : "myindex"
+      }
+    }
+  }
+}
