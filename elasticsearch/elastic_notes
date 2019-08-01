@@ -103,7 +103,15 @@ rootLogger.level = debug
 
 
 
+file required for elasticsearch 
+------------------------------------
 
+Config files locationedit
+Elasticsearch has three configuration files:
+
+elasticsearch.yml for configuring Elasticsearch
+jvm.options for configuring Elasticsearch JVM settings
+log4j2.properties for configuring Elasticsearch logging
 
 
 
@@ -383,8 +391,8 @@ we need to user _DELETE
     "title" : "Intersteller woo",
     "year" : 1959,
     "genre" : [
-      "Horror",
-      "Sci-Fi"
+      "Horror",	
+      "Sci-Fi"	
     ]
   }
 }
