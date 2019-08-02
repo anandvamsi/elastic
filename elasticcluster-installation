@@ -1,0 +1,103 @@
+
+
+Elasticsearch cluster installation 
+
+prerequite 
+centos-7 and atleatst 85% free space.
+
+--To be done in all the nodes(master,data)
+
+#Adding elasticsearch user
+useradd elatic
+
+#Setting the file limit
+vim /etc/security/limits.conf
+elastic  - nofile 65536
+
+#Setting up of kernel memory pararms
+vm.max_map_count = 262144
+
+#To keep the changes persistant
+sysctl  -p
+
+#Download the elasticsearch
+su - elastic
+cd ~elastic;wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.2.4.tar.gz
+
+configration files for master and data nodes
+
+###master
+cluster.name: elasticcluster
+node.name: master
+node.attr.zone: 1
+node.master: true
+node.data: true
+node.ingest: true
+#network.host: [_local_,_site_]
+network.host: 192.168.100.79
+discovery.zen.ping.unicast.hosts: ["192.168.100.81","192.168.100.80","192.168.100.79"]
+discovery.zen.minimum_master_nodes: 2
+
+##node1
+cluster.name: elasticcluster
+node.name: data2
+node.attr.zone: 3
+node.master: true
+node.data: true
+node.ingest: false
+#network.host: [_local_,_site_]i
+network.host: 192.168.100.80
+node.attr.temp: warm
+discovery.zen.ping.unicast.hosts: ["192.168.100.81", "192.168.100.79", "192.168.100.80"]
+discovery.zen.minimum_master_nodes: 2
+
+
+#node2
+cluster.name: elasticcluster
+node.name: data1
+node.attr.zone: 2
+node.master: true
+node.data: true
+node.attr.temp: hot
+node.ingest: false
+#network.host: [_local_,_site_]
+network.host: 192.168.100.81
+discovery.zen.ping.unicast.hosts: ["192.168.100.79", "192.168.100.80", "192.168.100.81"]
+discovery.zen.minimum_master_nodes: 2
+
+
+
+-- TO confirm if the nodes are in cluster--
+[elastic@kmaster logs]$ curl "192.168.100.79:9200/_cat/nodes?v"
+ip             heap.percent ram.percent cpu load_1m load_5m load_15m node.role master name
+192.168.100.81            9          81  26    0.06    0.03     0.22 md        *      data1
+192.168.100.80           10          58  26    0.00    0.04     0.31 md        -      data2
+192.168.100.79           25          95   9    0.00    0.03     0.25 mdi       -      master
+
+Note: you should be able to see all the 3 nodes
+
+
+
+[elastic@kmaster logs]$ curl -XGET '192.168.100.79:9200/_cluster/health?pretty'
+{
+  "cluster_name" : "elasticcluster",
+  "status" : "green",
+  "timed_out" : false,
+  "number_of_nodes" : 3,
+  "number_of_data_nodes" : 3,
+  "active_primary_shards" : 0,
+  "active_shards" : 0,
+  "relocating_shards" : 0,
+  "initializing_shards" : 0,
+  "unassigned_shards" : 0,
+  "delayed_unassigned_shards" : 0,
+  "number_of_pending_tasks" : 0,
+  "number_of_in_flight_fetch" : 0,
+  "task_max_waiting_in_queue_millis" : 0,
+  "active_shards_percent_as_number" : 100.0
+}
+[elastic@kmaster logs]$
+
+
+
+curl -XGET '192.168.100.79:9200/_cluster/stats?human&pretty'
