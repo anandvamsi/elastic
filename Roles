@@ -1,0 +1,24 @@
+
+There are two ways to create roles and users
+1. GUI 
+2. Using query method
+
+GUI method for creating users and roles
+-----------
+Using the admin login to the webconsole
+locate management --> roles
+click "Create roles"
+Provide the role name
+    1. Provide the cluster level privileges--check in 
+    2. Provide the index privilages name the indices 
+        example: logs*
+    3. Mention the privilages like read monitor
+    4. Mention the field to monitor
+
+GUI method for creating roles
+----------------------------
+managment --> create users
+mention the full name
+email id
+mention the roles
+note: Add kibana_user role as the privilages to make use of kibana.
