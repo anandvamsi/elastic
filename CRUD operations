@@ -36,8 +36,6 @@ GET index-1/doc/1
   }
 }
 
-
-##Upading the doucment
 #Update the document 
 POST index-1/doc/1/_update
 {
@@ -61,4 +59,6 @@ This will update the document1 and change the version
   }
 }
   
-
+  
+#Delete a document
+DELETE index-1/doc/1
