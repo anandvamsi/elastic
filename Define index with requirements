@@ -27,3 +27,28 @@ PUT /shakespeare1
      }
    }
  }
+----------------------------------------------------
+Creating another index
+
+PUT /logs123 
+{
+  "settings": {
+    "number_of_shards": 2,
+    "number_of_replicas": 1
+
+  },
+   "mappings": {
+     "log" :{
+       "properties": {
+        "geo": {
+          "properties": {
+              "coordinates": {
+                "type" : "geo_point"
+              }
+            }
+           }
+          }
+        }
+       }
+      }
+  
