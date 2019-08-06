@@ -1,0 +1,29 @@
+Creating a new index with set of requirements
+
+PUT /shakespeare1
+{
+  
+  "settings": {
+    "number_of_shards": 2,
+    "number_of_replicas": 1
+  },
+  
+   "mappings": {
+     "doc": {
+        "properties": {
+          "speaker": {
+            "type": "keyword"
+          },
+          "play_name":{
+            "type": "keyword"
+          },
+           "line_id": {
+             "type": "keyword"
+           },
+           "speech_number": {
+             "type": "integer"
+           }
+        }
+     }
+   }
+ }
