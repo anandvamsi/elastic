@@ -62,3 +62,9 @@ This will update the document1 and change the version
   
 #Delete a document
 DELETE index-1/doc/1
+
+#Bulk insert
+curl -XPOST 'https://192.168.20.19:9200/logs123/log/_bulk?pretty' -H "Content-Type: application/x-ndjson" --data-binary @logs.json -u elastic -k
+Notes:
+logs.json  is the file which is downloaded 
+make sure the index inside the file matches with logs123
