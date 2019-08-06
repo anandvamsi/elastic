@@ -1,0 +1,64 @@
+#Creating a document with data
+PUT index-121/doc/1
+{
+  "firstname": "anand",
+  "lastname": "vamsi"
+  
+}
+--result
+{
+  "_index": "index-1",
+  "_type": "doc",
+  "_id": "1",
+  "_version": 6,
+  "result": "updated",
+  "_shards": {
+    "total": 2,
+    "successful": 2,
+    "failed": 0
+  },
+  "_seq_no": 5,
+  "_primary_term": 1
+}
+
+
+##Reading the data 
+GET index-1/doc/1
+{
+  "_index": "index-1",
+  "_type": "doc",
+  "_id": "1",
+  "_version": 6,
+  "found": true,
+  "_source": {
+    "firstname": "anand",
+    "lastname": "vamsi"
+  }
+}
+
+
+##Upading the doucment
+#Update the document 
+POST index-1/doc/1/_update
+{
+  "doc": {
+    "firstname": "rajesh",
+    "middlename": "d"
+   }
+}
+
+This will update the document1 and change the version
+{
+  "_index": "index-1",
+  "_type": "doc",
+  "_id": "1",
+  "_version": 7,
+  "found": true,
+  "_source": {
+    "firstname": "rajesh",
+    "lastname": "vamsi",
+    "middlename": "d"
+  }
+}
+  
+
