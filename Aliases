@@ -64,3 +64,68 @@ Notes:
 Above will add as wells delete the alias "index"
 will add the alias named "index" for the index named "index-1"
 will delete the alias named "index" for the index named "index-21"
+
+
+
+#To get all the indices with same alias
+GET alias123
+
+
+##Filtering the data based on the pattern
+POST _aliases
+{
+  "actions": [
+    {
+      "add": {
+        "index": "shakespeare1",
+        "alias": "henry",
+        "filter": {
+          "term": {
+            "play_name": "Henry IV"
+          }
+        }
+      }
+    }
+  ]
+}
+
+Here im creating alias for the  index "shakespere1" for filtering the pattern play_name "Henry IV"
+Above query will create a index for the the filter condition
+
+Now to list all the documents with the pattern play_name "Henry IV"
+-------------------------------------------------------------------------
+#GET henry/_search
+
+{
+  "took": 5,
+  "timed_out": false,
+  "_shards": {
+    "total": 2,
+    "successful": 2,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": 3205,
+    "max_score": 1,
+    "hits": [
+      {
+        "_index": "shakespeare1",
+        "_type": "doc",
+        "_id": "0",
+        "_score": 1,
+        "_source": {
+          "type": "act",
+          "line_id": 1,
+          "play_name": "Henry IV",
+          "speech_number": "",
+          "line_number": "",
+          "speaker": "",
+          "text_entry": "ACT I"
+        }
+      },.....
+   
+ Note : check the  counts of total
+
+
+
