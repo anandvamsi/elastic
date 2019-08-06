@@ -22,3 +22,30 @@ mention the full name
 email id
 mention the roles
 note: Add kibana_user role as the privilages to make use of kibana.
+
+
+Method2:
+#To create roles
+POST /_xpack/security/role/test_role 
+{
+  "run_as": [],
+  "cluster" : ["monitor"],
+  "indices" : [
+     {
+      "names": "[logs*]",
+      "privileges": ["read","monitor"],
+      "field_security" : {
+      "grant": ["@timestap"]
+            }
+     }  
+    ]
+}
+
+#TO create a user from the above role
+POST  /_xpack/security/user/testuser2 
+{
+  "full_name": "test_user2",
+  "email": "test@gmail.com",
+  "password": "testuser2pass",
+  "roles": ["test_role", "_kibana_user"]
+}
