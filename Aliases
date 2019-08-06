@@ -36,3 +36,31 @@ Actions can be one or more actions in single post query.
               }
             }
           },.........
+          
+          
+ # Mutiple actions in a single command
+ 
+ POST _aliases 
+{
+  "actions": [
+    {
+      "add": {
+        "index": "index-1",
+        "alias": "index"
+      }
+      
+    },
+    {
+       "remove" : {
+         "index" : "index-21",
+          "alias" : "index"
+       }
+    }
+    
+  ]
+}
+
+Notes:
+Above will add as wells delete the alias "index"
+will add the alias named "index" for the index named "index-1"
+will delete the alias named "index" for the index named "index-21"
