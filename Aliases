@@ -1,5 +1,22 @@
+Aliases
+Once in production, it often happens that we need to reindex data from one index to another.
+We might have one or more applications developed in JAVA, Python, .NET, or other programming environments 
+that may be referring to these indexes. In the event that the production index needs to be changed from index1 to index2, 
+it will require a change in all client applications.
 
-# Create a alias to already assigned index.
+Aliases come to the rescue here. They offer extra flexibility, and hence, they are a recommended feature to use in production.
+The key thing is to create an alias for your production index and use the alias instead of the actual index name in the client 
+applications that use them.
+
+In the event that the current production index needs to change, we just need to update the alias to point to the new index instead of the old one. Using this feature, we can achieve zero downtime in production in the case of data migration or the need for reindexing. Aliases use a famous principle in computer science—an extra layer of indirection can solve most problems in computer science—https://en.wikipedia.org/wiki/Indirection.
+Apart from the ones discussed here, there are more features that aliases offer; these include the ability to use index patterns, routing, the ability to specify filters, and many more. We will see how index aliases can be leveraged when creating time-based indices later in the chapter.
+
+
+
+
+
+# Create a alias to for already created index.
+--------------------------------------------------
 POST _aliases 
 {
   "actions": [
@@ -12,7 +29,7 @@ POST _aliases
   ]
 }
 Note: 
-Here the name of the alias is index.
+Here the name of the alias is "index"
 Actions can be one or more actions in single post query.
 
 
@@ -39,6 +56,7 @@ Actions can be one or more actions in single post query.
           
           
  # Mutiple actions in a single command
+-------------------------------------------------------------------------
  
  POST _aliases 
 {
@@ -68,10 +86,12 @@ will delete the alias named "index" for the index named "index-21"
 
 
 #To get all the indices with same alias
+-----------------------------------------------------
 GET alias123
 
 
-##Filtering the data based on the pattern
+#Filtering the data based on the pattern
+---------------------------------------------------------
 POST _aliases
 {
   "actions": [
