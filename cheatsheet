@@ -1,3 +1,4 @@
+#To list all the node information
 GET _cat/nodes
 
 #To list all the indexes
