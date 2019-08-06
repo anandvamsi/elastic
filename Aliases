@@ -1,0 +1,38 @@
+
+# Create a alias to already assigned index.
+POST _aliases 
+{
+  "actions": [
+    {
+      "add": {
+        "index": "index-1",
+        "alias": "index"
+      }
+    }
+  ]
+}
+Note: 
+Here the name of the alias is index.
+Actions can be one or more actions in single post query.
+
+
+
+##To see the result of the alias has been assigned or not
+ GET index-1
+ {
+  "index-1": {
+    "aliases": {
+      "index": {}
+    },
+    "mappings": {
+      "doc": {
+        "properties": {
+          "address": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },.........
