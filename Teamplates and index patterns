@@ -385,4 +385,17 @@ PUT _template/mylogtemplate
   
 }
 
-This will create a template will be applied for futu
+This will create a template will be applied for future indexes of the pattern mentioned in the above template
+PUT logs-01
+PUT logs-02
+PUT logs-03
+
+Now
+GET logs-01
+GET logs-02
+GET logs-03
+
+To list all the logs in single shot use the alias
+----------------------------------------------------
+GET logalias
+
