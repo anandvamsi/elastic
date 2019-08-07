@@ -90,6 +90,18 @@ will delete the alias named "index" for the index named "index-21"
 GET alias123
 
 
+#mapping multiple indexes to single alias
+---------------------------------------------------
+POST /_aliases
+{
+    "actions" : [
+        { "add" : { "indices" : ["test1", "test2"], "alias" : "alias1" } }
+    ]
+}
+
+
+
+
 #Filtering the data based on the pattern
 ---------------------------------------------------------
 POST _aliases
