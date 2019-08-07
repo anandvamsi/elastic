@@ -1,0 +1,104 @@
+#Dynamic templates
+Elasticsearch tries its best to map your fields to the right datatype in the event that you do not explicitly 
+define your field mappings
+Dynamic templates, we can change the automatic mapping behavior of Elasticsearch to behave more to our liking.
+
+#Creating a dynamic index
+----------------------------------
+PUT index-1313
+{
+  "mappings": {
+    "doc": {
+      "dynamic_templates": [
+        {
+          "string_to_keywords": {
+            "match_mapping_type": "string",
+            "mapping": {
+              "type": "text"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+
+Inserting data into dynamic index
+-----------------------------------
+
+PUT index-1313/doc/1 
+{
+   "name": "rajesh"
+}
+
+To match all the fileds with like data type using match
+-------------------------------------------------------------
+PUT my_index123
+{
+  "mappings": {
+    "doc": {
+      "dynamic_templates": [
+        {
+          "string_match": {
+            "match_mapping_type": "string",
+            "match": "*_name",
+            "mapping": {
+              "type": "keyword"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+Note: Here the all the field names ending with keyword will be converted to string 
+
+
+Inserting the data to index123
+-------------------------------------
+PUT my_index123/doc/1
+{
+  "first_name": "rajesh",
+  "second_name": "Krishna",
+"address": "Flat #102"
+}
+
+Now
+Get my_index123
+{
+  "my_index123": {
+    "aliases": {},
+    "mappings": {
+      "doc": {
+        "dynamic_templates": [
+          {
+            "string_match": {
+              "match": "*_name",
+              "match_mapping_type": "string",
+              "mapping": {
+                "type": "keyword"
+              }
+            }
+          }
+        ],
+        "properties": {
+          "address": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "first_name": {
+            "type": "keyword"
+          },
+          "second_name": {
+            "type": "keyword"
+          }
+        }
+      }
+    
+Note:
+first_name and second_name will be data type wiht keyword and address will be text.
