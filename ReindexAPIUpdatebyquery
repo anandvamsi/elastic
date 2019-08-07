@@ -1,0 +1,12 @@
+
+TO reindex from one index to another index
+------------------------------------------
+POST _reindex 
+{
+   "source": {
+     "index": "banking1_new"
+      },
+    "dest": {
+      "index": "1bank"
+    }
+}
