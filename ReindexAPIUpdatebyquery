@@ -10,3 +10,79 @@ POST _reindex
       "index": "1bank"
     }
 }
+Notes:
+This will copy all the data from banking1_new to 1bank with exact count.
+
+
+To move all certain documents with condtion 
+-----------------------------------------------
+
+POST _reindex
+{
+  "source": {
+    "index": "banking1",
+    "query": {
+      "match": {
+        "gender": "F"
+      }
+    }
+  },
+  "dest": {
+    "index": "banking1_new"
+  }
+}
+
+Note:
+This will move all the documents with gender F from banking1 index to banking1_new
+
+
+Update by query
+-------------------------
+This is used when you want update the documents on the fly with a condition
+
+sample data
+{
+  "took": 1,
+  "timed_out": false,
+  "_shards": {
+    "total": 5,
+    "successful": 5,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": 493,
+    "max_score": 1,
+    "hits": [
+      {
+        "_index": "banking1_new",
+        "_type": "account",
+        "_id": "25",
+        "_score": 1,
+        "_source": {
+          "account_number": 25,
+          "firstname": "Virginia",
+          "address": "171 Putnam Avenue",
+          "balance": 54283,
+          "gender": "F",
+          "city": "Nicholson",
+          "employer": "Filodyne",
+          "state": "PA",
+          "age": 39,
+          "email": "virginiaayala@filodyne.com",
+          "lastname": "Ayala"
+        }
+      }
+    
+
+
+
+POST banking1_new/_update_by_query 
+{
+  "script" : {
+    "lang": "painless",
+    "source": "ctx._source.balance += ctx._source.balance * 0.03"
+  }
+ }
+ 
+This will update the the balance with adding 3 %
