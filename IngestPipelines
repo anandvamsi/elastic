@@ -58,3 +58,9 @@ POST _reindex
     , "pipeline": "bankpipline"
   }
 }
+
+To delete the piplines
+--------------------------------------
+DELETE _ingest/pipeline/bankpipline   
+
+
