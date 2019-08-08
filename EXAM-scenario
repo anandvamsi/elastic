@@ -1,0 +1,44 @@
+Questions
+
+Name	    Index Pattern	Aliases	Primary Shards	Replica Shards	Explicit Mapping	Dynamic Mapping
+customers	 customers-*	customers	2	1	field: year_to_date
+type:       double	name: long_to_integer
+match mapping type: long
+mapping: integers
+
+
+
+
+PUT _template/customers
+{
+  "aliases": {
+    "customers": {}
+  },
+  "index_patterns": [
+    "customers-*"
+  ],
+  "settings": {
+    "number_of_shards": 2,
+    "number_of_replicas": 1
+  },
+  "mappings": {
+    "doc": {
+      "dynamic_templates": [
+        {
+          "long_to_integer": {
+            "match_mapping_type": "long",
+            "mapping": {
+              "type": "integers"
+            }
+          }
+        }
+      ],
+      "properties": {
+        "year_to_date": {
+          "type": "double"
+        }
+      }
+    }
+  }
+}  
+  
