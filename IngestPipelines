@@ -1,0 +1,60 @@
+
+#TO create a new piplelines
+
+PUT _ingest/pipeline/bankpipline
+{
+  "description": "some manupation of data",
+  "processors": [
+    {
+      "remove": {
+        "field": "account_number"
+      }
+    },
+    {
+      "convert": {
+        "field": "age",
+        "type": "string"
+      }
+    },
+    {
+      "set": {
+        "field": "_source.fullname",
+        "value": "{{_source.firstname}} {{_source.lastname}}"
+      }
+    },
+    {
+      "script": {
+        "lang": "painless",
+        "source": """
+          if(ctx.gender == "M") {
+          ctx.gender = "Male"
+          }else{
+          ctx.gender = "Female"
+          }
+"""
+      }
+    }
+  ]
+}   
+
+Note:
+  This pipelines will remove the field account number
+  will conervt the age field to string
+  concat the first and lastname to new field called fullname
+  will mark the gender M as M and Female F
+  
+  
+Step2 :
+Now reindex to new data
+
+POST _reindex
+{
+  "source": {
+    "index": "bank"
+    
+  },
+  "dest": {
+    "index": "bank123"
+    , "pipeline": "bankpipline"
+  }
+}
