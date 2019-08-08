@@ -42,3 +42,76 @@ PUT _template/customers
   }
 }  
   
+  
+  Exam sceneario 2
+  --------------------
+  
+  PUT _template/leads
+{
+"aliases": {
+ "leads": {}
+},
+"index_patterns": ["leads-*"],
+"mappings": {
+ "doc": {
+   "dynamic_templates": [
+     {
+       "string_to_keyword": {
+         "match_mapping_type": "string",
+         "match": "lead_*",
+         "unmatch": "*_text",
+         "mapping": {
+           "type": "keyword"
+         }
+       }
+     }
+   ],
+   "properties": {
+     "address": {
+       "type": "text"
+     },
+     "estimate": {
+       "type": "double"
+     }
+   }
+ }
+}, 
+"settings": {
+ "number_of_shards": 2,
+ "number_of_replicas": 1
+}
+}
+
+
+PUT _template/partners
+{
+"aliases": {
+ "partners": {}
+},
+"index_patterns": ["partners-*"],
+"mappings": {
+ "doc": {
+   "dynamic_templates": [
+     {
+       "string_to_keyword": {
+         "match_mapping_type": "string",
+         "mapping": {
+           "type": "keyword"
+         }
+       }
+     }
+   ],
+   "properties": {
+     "address": {
+       "type": "text"
+     }
+   }
+ }
+}, 
+"settings": {
+ "number_of_shards": 2,
+ "number_of_replicas": 1
+}
+}
+
+
