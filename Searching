@@ -1,0 +1,18 @@
+
+Types of seraching with indexes.
+###################################
+
+/_search
+Search all types in all indices
+
+/gb/_search
+Search all types in the gb index
+
+/gb,us/_search
+Search all types in the gb and us indices
+
+/g*,u*/_search
+Search all types in any indices beginning with g or beginning with u
+
+/gb/user/_search
+Search type user in the gb index
