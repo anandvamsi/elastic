@@ -1,5 +1,14 @@
-Creating a new index with set of requirements
 
+what is mappings
+-----------------------
+
+The mapping, like a database schema, describes the fields or properties that documents of that type may have,
+the datatype of each field—such as string, integer, or date—and how those fields
+should be indexed and stored by Lucene.
+
+
+Creating a new index with set of requirements
+-----------------------------------------------
 PUT /shakespeare1
 {
   
