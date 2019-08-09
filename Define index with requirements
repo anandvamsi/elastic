@@ -6,6 +6,13 @@ The mapping, like a database schema, describes the fields or properties that doc
 the datatype of each field—such as string, integer, or date—and how those fields
 should be indexed and stored by Lucene.
 
+#Topics-
+# Creating a new index with set of requirements
+# simple mapping
+# Multi field mapping
+ 
+
+
 
 Creating a new index with set of requirements
 -----------------------------------------------
@@ -36,9 +43,10 @@ PUT /shakespeare1
      }
    }
  }
-----------------------------------------------------
-Creating another index
+ 
 
+#simple mapping
+---------------------
 PUT /logs123 
 {
   "settings": {
@@ -61,3 +69,28 @@ PUT /logs123
        }
       }
   
+ #Multi field mapping
+ -----------------------
+ 
+ PUT /twitter-1
+{
+  "mappings": {
+    "doc": {
+      "properties": {
+        "user_name": {
+          "type": "text"
+        },
+        "author": {
+          "properties": {
+            "id": {
+              "type": "text"
+            },
+            "name": {
+              "type": "text"
+            }
+          }
+        }
+      }
+    }
+  }
+}
