@@ -159,5 +159,33 @@ Now to list all the documents with the pattern play_name "Henry IV"
    
  Note : check the  counts of total
 
+To show all the aliases
+------------------------
+GET /_cat/aliases?v
+alias     index        filter routing.index routing.search
+logalias  logs-01      -      -             -
+my_logs   logs-01      -      -             -
+this_week logs-01      -      -             -
+henry_iv  shakespeare  *      -             -
+alias1    shakespeare1 -      -             -
+alias1    test2        -      -             -
+alias1    test1        -      -             -
+.security .security-6  -      -             -
+logalias  logs-04      -      -             -
+my_logs   logs-04      -      -             -
+
+
+
+
+TO create aliases using the index creation
+-------------------------------------------
+  
+PUT logs-01
+{
+  "aliases": {
+    "this_week": {}
+  }
+}
+
 
 
