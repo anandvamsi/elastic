@@ -1,3 +1,14 @@
+Topics
+----------------------------
+#Creating a document with data
+#Reading the data 
+#Update the document 
+#Delete a document
+#Bulk_insert
+
+
+
+
 #Creating a document with data
 PUT index-121/doc/1
 {
