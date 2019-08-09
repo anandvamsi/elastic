@@ -12,6 +12,15 @@ In the event that the current production index needs to change, we just need to 
 Apart from the ones discussed here, there are more features that aliases offer; these include the ability to use index patterns, routing, the ability to specify filters, and many more. We will see how index aliases can be leveraged when creating time-based indices later in the chapter.
 
 
+##Topics
+---------------------
+# Create a alias to for already created index.
+# Mutiple actions in a single command
+# To get all the indices with same alias
+# Filtering the data based on the pattern
+# To show all the aliases
+# TO create aliases using the index creation
+
 
 
 
