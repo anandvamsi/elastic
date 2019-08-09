@@ -1,6 +1,7 @@
 Topics
 ----------------------------
 #Creating a document with data
+#Creating a nested data to index
 #Reading the data 
 #Update the document 
 #Delete a document
@@ -32,8 +33,26 @@ PUT index-121/doc/1
   "_primary_term": 1
 }
 
+#Creating a nested data to index
+---------------------------------
+PUT my_index/_doc/1
+{
+  "group" : "fans",
+  "user" : [ 
+    {
+      "first" : "John",
+      "last" :  "Smith"
+    },
+    {
+      "first" : "Alice",
+      "last" :  "White"
+    }
+  ]
+}  
 
-##Reading the data 
+
+#Reading the data 
+---------------------------
 GET index-1/doc/1
 {
   "_index": "index-1",
@@ -48,6 +67,7 @@ GET index-1/doc/1
 }
 
 #Update the document 
+-----------------------------
 POST index-1/doc/1/_update
 {
   "doc": {
@@ -72,9 +92,11 @@ This will update the document1 and change the version
   
   
 #Delete a document
+-------------------
 DELETE index-1/doc/1
 
 #Bulk insert
+------------------
 curl -XPOST 'https://192.168.20.19:9200/logs123/log/_bulk?pretty' -H "Content-Type: application/x-ndjson" --data-binary @logs.json -u elastic -k
 Notes:
 logs.json  is the file which is downloaded 
