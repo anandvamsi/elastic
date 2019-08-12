@@ -1,0 +1,87 @@
+# TO search for any for the key words
+GET shakespeare/_search
+{
+  "query": {
+    "match": {
+      "text_entry": "shaken more lips"
+    }
+  }
+}
+
+#TO search for exact sententce
+GET shakespeare/_search
+{
+  "query": {
+    "match_phrase": {
+      "text_entry": "where art thou"
+    }
+  }
+}
+
+
+GET shakespeare/_search
+{
+  "query": {
+    "multi_match": {
+      "query": "",
+      "fields": []
+    }
+
+  }
+
+}
+
+#Match exact key term 
+GET shakespeare/_search
+{
+  "query": {
+    "term": {
+      "play_name": {
+        "value": "Othello"
+      }
+    }
+  }
+}
+
+
+#To get the exact patterns with OR
+GET shakespeare/_search
+{
+  "query": {
+    "terms": {
+      "play_name": [
+        "Othello",
+        "Romeo and juliet"
+      ]
+    }
+  }
+}
+
+
+#TO get the documents between the range
+GET shakespeare/_search
+{
+  "query": {
+    "range": {
+      "speech_number": {
+        "gte": 10,
+        "lte": 20
+      }
+    }
+  }
+}
+
+#To search based on the dates; format has be mentioned 
+GET dates/_search
+{
+  "query": {
+      "range": {
+        "log_date": {
+          "gte": "10/09/2018",
+          "lte": "13/09/2018"
+           , "format": "dd/MM/yyyy"
+        }
+      }
+    
+  }
+}
