@@ -1,0 +1,47 @@
+
+Step1:
+
+# TO list all the 10000 nodes
+GET shakespeare/_search?scroll=10m
+{
+  "size": 10000
+}
+Note:
+This will create the scroll-ID
+
+{
+  "_scroll_id": "DnF1ZXJ5VGhlbkZldGNoAgAAAAAABW31FmZLa3NaaU1BUk1pdlNrSG0xSE5zeWcAAAAAAAc8gRZHVEtBTmc5aFFuQzdGdDJhT2N6cVBB",
+  "took": 113,
+  "timed_out": false,
+  "_shards": {
+    "total": 2,
+    "successful": 2,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": 111396,
+    "max_score": 1,
+    "hits": [
+      {
+        "_index": "shakespeare",
+        "_type": "doc",
+        "_id": "0",
+        "_score": 1,
+        "_source": {
+          "type": "act",
+          "line_id": 1,
+          "play_name": "Henry IV",
+          "speech_number": "
+....................................
+
+Step2:
+GET _search/scroll
+{
+  "scroll": "10m",
+   "scroll_id" : "DnF1ZXJ5VGhlbkZldGNoAgAAAAAABkN1FkFUOTczTXM5UV95dko5MWZMUW0yaEEAAAAAAAZDdhZBVDk3M01zOVFfeXZKOTFmTFFtMmhBDnF1ZXJ5VGhlbkZldGNoAgAAAAAABkN1FkFUOTczTXM5UV95dko5MWZMUW0yaEEAAAAAAAZDdhZBVDk3M01zOVFfeXZKOTFmTFFtMmhB"
+  
+}
+
+#To delete the scroll 
+DELETE _search/scroll/DnF1ZXJ5VGhlbkZldGNoAgAAAAAABkN1FkFUOTczTXM5UV95dko5MWZMUW0yaEEAAAAAAAZDdhZBVDk3M01zOVFfeXZKOTFmTFFtMmhB
