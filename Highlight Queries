@@ -1,0 +1,16 @@
+
+GET shakespeare/_search
+{
+  "query": {
+    "match": {
+      "text_entry": "life"
+    }
+  },
+  "highlight": {
+    "pre_tags": "<strong>",
+    "post_tags": "</strong>",
+    "fields": {
+      "text_entry": {}
+    }
+  }
+}
