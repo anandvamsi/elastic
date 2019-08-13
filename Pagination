@@ -1,0 +1,14 @@
+Pagination is used show the results in the page with the limit
+
+GET shakespeare/_search?size=50&from=10
+{
+  "query": {
+    "term": {
+      "play_name": {
+        "value": "Romeo and Juliet"
+      }
+    }
+  }
+}
+
+This will show the results from the 10Th result to 50 results.
