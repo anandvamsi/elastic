@@ -1,14 +1,18 @@
-# TO search for any for the key words
+
+
+
+#To search key word life or love or hate
 GET shakespeare/_search
 {
   "query": {
     "match": {
-      "text_entry": "shaken more lips"
+      "text_entry": "life love hate"
     }
   }
 }
 
-#TO search for exact sententce
+
+#TO search for phase 
 GET shakespeare/_search
 {
   "query": {
@@ -17,21 +21,17 @@ GET shakespeare/_search
     }
   }
 }
+Note:
+"This will check for where art thou"
 
 
-GET shakespeare/_search
-{
-  "query": {
-    "multi_match": {
-      "query": "",
-      "fields": []
-    }
+##Searching on NON-Analyzed queries
+Term Filter
+The term filter is used to filter by exact values, be they numbers, dates, Booleans, or not_analyzed exact-value string fields:
 
-  }
+Term queries work with exact value matches and are generally very fast.
 
-}
 
-#Match exact key term 
 GET shakespeare/_search
 {
   "query": {
@@ -42,35 +42,80 @@ GET shakespeare/_search
     }
   }
 }
+This will check the exact keyword Othello
+
+##terms Filter
+The terms filter is the same as the term filter, but allows you to specify multiple values
+to match. If the field contains any of the specified values, the document matches:
 
 
-#To get the exact patterns with OR
+OR condition with NON Analyzed queries using terms
 GET shakespeare/_search
 {
   "query": {
     "terms": {
       "play_name": [
-        "Othello",
-        "Romeo and juliet"
+        "Henry IV",
+        "Othello"
       ]
     }
   }
 }
 
 
-#TO get the documents between the range
+
+Using the range 
+
 GET shakespeare/_search
 {
   "query": {
     "range": {
       "speech_number": {
-        "gte": 10,
+        "gte": 1,
         "lte": 20
       }
     }
   }
 }
 
+
+
+#WILD card query 
+
+
+GET shakespeare/_search
+{
+  "query": {
+    "wildcard": {
+      "line_number": "2.9*"
+    }
+  }
+}
+
+  
+ Another example
+ POST /mybooks/_search
+{
+  "query": {
+    "wildcard": {
+      "uuid": "22?2*"
+    }
+  }
+}
+
+? means : it is one character
+* means : it can one or more character
+
+
+
+
+
+
+Relavancy Score
+when a search is done a relavncy score is generated using some methods.
+Relavancy scrore gets smaller smalller and smaller through out the results.
+exmaple 
+Those documents with higher number of matches will have high relavancy score
 #To search based on the dates; format has be mentioned 
 GET dates/_search
 {
