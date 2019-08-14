@@ -1,0 +1,25 @@
+Fuziness will get the results based pattern not exact.
+
+
+
+
+
+GET shakespeare/_search?size=20&from=40
+{
+  "query": {
+    "fuzzy": {
+      "text_entry": {
+        "value": "shakne",
+        "fuzziness": 1,
+        "prefix_length": 1,
+        "max_expansions": 50,
+        "transpositions": true
+      }
+    }
+  }
+}
+
+transpostions: Are the charcter transpose each othere
+Max_expansions: max of unique term which will get generated
+Prefix_length : ingore the first character from the  value <In this case s is removed>
+
