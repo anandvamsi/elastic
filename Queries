@@ -106,6 +106,31 @@ GET shakespeare/_search
 ? means : it is one character
 * means : it can one or more character
 
+#Queries with Operator
+GET my_index/_search
+{
+  "query": {
+    "match": {
+      "title": {
+        "query": "quick brown",
+        "operator": "and"
+      }
+    }
+  }
+}
+
+#Query with minimum should match
+GET my_index/_search
+{
+  "query": {
+    "match": {
+      "title": {
+        "query": "quick brown",
+        "minimum_should_match": "75%"
+      }
+    }
+  }
+}
 
 
 
