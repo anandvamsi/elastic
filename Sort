@@ -1,0 +1,23 @@
+GET bank/_search
+{
+  "query": {
+    "match": {
+      "state": "PA"
+    }
+  },
+  "sort": [
+    {
+      "age": {
+        "order": "desc"
+      }
+    },
+    {
+      "balance": {
+        "order": "desc"
+      }
+    }
+  ]
+}
+
+Notes:
+Here there are two sorts firt it sorts by age and then by balance.
