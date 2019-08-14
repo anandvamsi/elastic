@@ -1,0 +1,16 @@
+GET bank/_search/template
+{
+  "source": {
+    "query": {
+      "match": {
+        "{{my_field}}": "{{my_value}}"
+      }
+    }
+  },
+  "params": {
+    "my_field": "firstname",
+    "my_value": "Virginia"
+  }
+}
+
+
