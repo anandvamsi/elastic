@@ -1,0 +1,47 @@
+GET bank/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "term": {
+            "gender.keyword": {
+              "value": "F"
+            }
+          }
+        }
+      ],
+      "must_not": [
+        {
+          "term": {
+            "state.keyword": {
+              "value": "PA"
+            }
+          }
+        }
+      ],
+      "should": [
+        {
+          "term": {
+            "lastname.keyword": {
+              "value": "Davidson"
+            }
+          }
+        },
+        {
+          "term": {
+            "lastname.keyword": {
+              "value": "Hess"
+            }
+          }
+        }
+      ],
+      "minimum_should_match": 1,
+      "filter": {
+        "term": {
+          "city.keyword": "Crumpler"
+        }
+      }
+    }
+  }
+}
