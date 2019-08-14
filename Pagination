@@ -12,3 +12,17 @@ GET shakespeare/_search?size=50&from=10
 }
 
 This will show the results from the 10Th result to 50 results.
+
+
+GET bank/_search?size=20&from=0
+{
+  "query": {
+    "match": {
+      "state": "PA"
+    }
+  }
+}
+
+from 0 and size20 means
+show me the results from 0 till 20
+
