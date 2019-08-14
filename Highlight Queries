@@ -14,3 +14,40 @@ GET shakespeare/_search
     }
   }
 }
+
+
+THis will publish the results similar to this
+
+{
+  "took": 44,
+  "timed_out": false,
+  "_shards": {
+    "total": 2,
+    "successful": 2,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": 82,
+    "max_score": 11.423632,
+    "hits": [
+      {
+        "_index": "shakespeare",
+        "_type": "doc",
+        "_id": "42455",
+        "_score": 11.423632,
+        "_source": {
+          "type": "line",
+          "line_id": 42456,
+          "play_name": "Henry VIII",
+          "speech_number": 12,
+          "line_number": "",
+          "speaker": "Second Gentleman",
+          "text_entry": "Trumpets"
+        },
+        "highlight": {
+          "text_entry": [
+            "<strong>Trumpets</strong>"
+          ]
+        }
+      },
