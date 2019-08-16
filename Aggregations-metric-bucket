@@ -5,6 +5,27 @@ The main usage of aggregations is to provide additional data to the search resul
 
 
 
+
+
+
+
+Aggregations 
+An aggregation can be seen as a unit-of-work that builds analytic information over a set of documents.
+
+There are differenet types of Aggregation
+1. Bucketing 
+A family of aggregations that build buckets, where each bucket is associated with a key and a document criterion. When the aggregation is executed, all the buckets criteria are evaluated on every document in the context and when a criterion matches, the document is considered to "fall in" the relevant bucket. By the end of the aggregation process, we’ll end up with a list of buckets - each one with a set of documents that "belong" to it.
+
+Metric
+Aggregations that keep track and compute metrics over a set of documents.
+
+
+
+Metric Aggregations
+-------------------
+cardinality
+A single-value metrics aggregation that calculates an approximate count of distinct values
+
 GET logs/_search?size=0
 {
   "aggs": {
@@ -17,17 +38,8 @@ GET logs/_search?size=0
   
 }
 
-#Using the metric aggregation
-GET logs/_search?size=0
-{
-  "aggs": {
-    "ip_agg": {
-      "cardinality": {
-        "field": "ip.keyword"
-      }
-    }
-  }
-}
+
+
 
 #Using the metric sum aggregation 
 GET logs/_search?size=0
@@ -41,17 +53,6 @@ GET logs/_search?size=0
   }
 }
 
-#using the avergae of aggregate
-GET logs/_search?size=0
-{
-  "aggs": {
-    "avgofbytes": {
-      "avg": {
-        "field": "bytes"
-      }
-    }
-  }
-}
 
 #Extended_stats
 GET shakespeare/_search?size=0
@@ -64,6 +65,140 @@ GET shakespeare/_search?size=0
     }
   }
 }
+
+---truncated
+hits": []
+  },
+  "aggregations": {
+    "speech_number": {
+      "count": 111392,
+      "min": 1,
+      "max": 405,
+      "avg": 36.88565606147659,
+      "sum": 4108767,
+      "sum_of_squares": 329654317,
+      "variance": 1598.855847827986,
+      "std_deviation": 39.98569554013017,
+      "std_deviation_bounds": {
+        "upper": 116.85704714173693,
+        "lower": -43.08573501878376
+      }
+    }
+  }
+}
+
+
+#_stats
+GET shakespeare/_search?size=0
+{
+  "aggs": {
+    "speech_number": {
+      "stats": {
+        "field": "speech_number"
+      }
+    }
+  }
+}
+--truncated---
+ "aggregations": {
+    "speech_number": {
+      "count": 111392,
+      "min": 1,
+      "max": 405,
+      "avg": 36.88565606147659,
+      "sum": 4108767
+    }
+  }
+}
+
+
+##Max values
+GET shakespeare/_search?size=0
+{
+  "aggs": {
+    "speech_number": {
+      "max": {
+        "field": "speech_number"
+      }
+    }
+  }
+}
+
+--truncated
+"aggregations": {
+    "speech_number": {
+      "value": 405
+    }
+  }
+}
+
+
+##Minimum values
+GET shakespeare/_search?size=0
+{
+  "aggs": {
+    "speech_number": {
+      "min": {
+        "field": "speech_number"
+      }
+    }
+  }
+}
+
+--Truncated
+  "aggregations": {
+    "speech_number": {
+      "value": 1
+    }
+  }
+}
+
+
+##sum 
+GET shakespeare/_search?size=0
+{
+  "aggs": {
+    "speech_number": {
+      "sum": {
+        "field": "speech_number"
+      }
+    }
+  }
+}
+---truncated
+ "hits": {
+    "total": 111396,
+    "max_score": 0,
+    "hits": []
+  },
+  "aggregations": {
+    "speech_number": {
+      "value": 4108767
+    }
+  }
+}
+
+
+##Average
+GET shakespeare/_search?size=0
+{
+  "aggs": {
+    "speech_number": {
+      "avg": {
+        "field": "speech_number"
+      }
+    }
+  }
+}
+
+----truncated
+  "aggregations": {
+    "speech_number": {
+      "value": 36.88565606147659
+    }
+  }
+}
+
 
 
 
