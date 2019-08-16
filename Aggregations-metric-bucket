@@ -48,6 +48,7 @@ GET logs/_search?size=0
 
 
 #Bucket aggregation 
+a.Terms
 GET logs/_search?size=0
 {
   "aggs": {
@@ -60,3 +61,16 @@ GET logs/_search?size=0
   }
 }
 
+b.Based on the date_histogram.
+
+GET logs/_search?size=0
+{
+  "aggs": {
+    "response_per_date": {
+      "date_histogram": {
+        "field": "@timestamp",
+        "interval": "hour"
+      }
+    }
+  }
+}
