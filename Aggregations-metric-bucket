@@ -1,0 +1,62 @@
+GET logs/_search?size=0
+{
+  "aggs": {
+    "ip_aggs": {
+      "cardinality": {
+        "field": "clientip.keyword"
+      }
+    }
+  }
+  
+}
+
+#Using the metric aggregation
+GET logs/_search?size=0
+{
+  "aggs": {
+    "ip_agg": {
+      "cardinality": {
+        "field": "ip.keyword"
+      }
+    }
+  }
+}
+
+#Using the metric sum aggregation 
+GET logs/_search?size=0
+{
+  "aggs": {
+    "bytes_oflogs": {
+      "sum": {
+        "field": "bytes"
+      }
+    }
+  }
+}
+
+#using the avergae of aggregate
+GET logs/_search?size=0
+{
+  "aggs": {
+    "avgofbytes": {
+      "avg": {
+        "field": "bytes"
+      }
+    }
+  }
+}
+
+
+#Bucket aggregation 
+GET logs/_search?size=0
+{
+  "aggs": {
+    "response_code": {
+      "terms": {
+        "field": "response.keyword",
+        "size": 10
+      }
+    }
+  }
+}
+
