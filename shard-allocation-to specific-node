@@ -1,0 +1,25 @@
+
+
+# Create a index with replica and shard settings
+PUT index-15
+{
+  "settings": {
+    "number_of_replicas": 1,
+    "number_of_shards": 2
+  }
+}
+
+#Disable all the replica setting.
+PUT index-15/_settings
+{
+  "number_of_replicas": 0
+}
+
+#Now allocate the shared to specificed data node
+PUT index-15/_settings
+{
+  "index.routing.allocation.include._name": "data2"
+}
+
+Notes
+Here we moving the data from all the nodes to data2,if there are more than 2 nodes it should be between square brackets.
