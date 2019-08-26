@@ -21,5 +21,22 @@ PUT index-15/_settings
   "index.routing.allocation.include._name": "data2"
 }
 
+index    shard prirep state   docs store ip            node
+index-15 1     p      STARTED    0  230b 192.168.20.20 data2
+index-15 0     p      STARTED    0  230b 192.168.20.21 data2
+
+
+
 Notes
 Here we moving the data from all the nodes to data2,if there are more than 2 nodes it should be between square brackets.
+
+#To reallocate back to to the nodes
+
+PUT index-15/_settings
+{
+  "index.routing.allocation.include._name": null
+}
+
+index    shard prirep state   docs store ip            node
+index-15 1     p      STARTED    0  230b 192.168.20.20 data2
+index-15 0     p      STARTED    0  230b 192.168.20.21 data3
