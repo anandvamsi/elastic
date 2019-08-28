@@ -2,6 +2,8 @@
 2. Create a simple analyzer
 3. Create a  whitespace analyzer
 4. Create a language analyzer
+5. Create a multi analyzer
+6. Create a Analyzer with tokenzier
 
 POST _analyze
 {
@@ -122,3 +124,80 @@ While searching the with whitespace Analyzer , the pattern must be exact.
 Notes:
 It will remove all the stop words and remove all the hypens, single quotes..etc
 IT will remove the root words like fox instead foxes
+
+5. Create a multi-analyzer
+---------------------------
+step a:
+PUT index-18
+{
+  "mappings": {
+    "doc": {
+      "properties": {
+        "text": {
+          "type": "text",
+          "fields": {
+            "simple": {
+              "type": "text",
+              "analyzer": "simple"
+            },
+            "whitespace": {
+              "type": "text",
+              "analyzer": "whitespace"
+            },
+            "english": {
+              "type": "text",
+              "analyzer": "english"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+step b:
+PUT index-18/doc/1
+{
+ "text": "THE 3 QUICK Brown-Foxes jumped over the neighbour's fence"
+}
+
+step c:
+GET index-18/_search
+{
+  "query": {
+    "match": {
+      "text.simple": "neighbour's"
+    }
+  }
+ }
+ 
+6.
+PUT index-19
+{
+  "mappings": {
+    "doc": {
+      "properties": {
+        "text": {
+          "type": "text",
+          "analyzer": "whitespace_lowercase"
+        }
+      }
+    }
+  },
+  "settings": {
+    "analysis": {
+      "analyzer": {
+        "whitespace_lowercase": {
+          "tokenizer": "whitespace",
+          "filter": [
+            "lowercase"
+          ]
+        }
+      }
+    }
+  }
+}
+
+Note: 
+First we need to create a settings part and use that one as the Analyzer
+
