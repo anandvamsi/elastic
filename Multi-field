@@ -1,0 +1,28 @@
+1. Create a multi field Analyzer
+
+PUT index-21
+{
+  "mappings": {
+    "doc": {
+      "properties": {
+        "field": {
+          "type": "text",
+          "fields": {
+            "simple": {
+              "type": "text",
+              "analyzer": "simple"
+            },
+            "english": {
+              "type": "text",
+              "analyzer": "standard"
+            },
+            "keyword": {
+              "type": "keyword",
+              "ignore_above": 250
+            }
+          }
+        }
+      }
+    }
+  }
+}
