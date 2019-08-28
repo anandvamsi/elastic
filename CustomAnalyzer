@@ -1,4 +1,7 @@
 1. Create a standard analyzer
+2. Create a simple analyzer
+3. Create a  whitespace analyzer
+4. Create a language analyzer
 
 POST _analyze
 {
@@ -7,7 +10,9 @@ POST _analyze
 }
 
 Notes:
-It will split into tokenizer,numbers will be defined as NUM and words will be defined by the the type ALPHANUM
+1.It will split into tokenizer,numbers will be defined as NUM and words will be defined
+by the the type ALPHANUM
+2.converts into the lower case
 
 output
 
@@ -84,3 +89,36 @@ output
     }
   ]
 }
+
+2.
+Simple Analyzer
+It will be split based on the '
+
+POST _analyze
+{
+  "analyzer": "simple",
+  "text": "THE 3 QUICK Brown-Foxes jumped over the neighbour's fence"
+}
+
+
+3. Create a whitespace Analyzer
+POST _analyze
+{
+  "analyzer": "whitespace",
+  "text": "THE 3 QUICK Brown-Foxes jumped over the neighbour's fence"
+}
+
+Note:
+It will split based on the whitespace.
+While searching the with whitespace Analyzer , the pattern must be exact.
+
+
+4.POST _analyze
+{
+  "analyzer": "english",
+  "text": "THE 3 QUICK Brown-Foxes jumped over the neighbour's fence"
+}
+
+Notes:
+It will remove all the stop words and remove all the hypens, single quotes..etc
+IT will remove the root words like fox instead foxes
