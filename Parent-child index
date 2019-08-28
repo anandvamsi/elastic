@@ -1,0 +1,34 @@
+PUT index-24
+{
+  "mappings": {
+    "doc": {
+      "properties": {
+        "join": {
+          "type": "join",
+          "relations": {
+            "question": "answer"
+          }
+        }
+      }
+    }
+  }
+}
+
+PUT index-24/doc/1
+{
+  "text": "A for ",
+  "join": {
+    "name": "question"
+  }
+}
+
+
+PUT index-24/doc/2?routing=1
+{
+  "text": "Apple",
+   "join": {
+     "name" : "answer",
+     "parent": "1"
+     
+   }
+}
