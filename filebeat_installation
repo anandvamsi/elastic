@@ -1,0 +1,44 @@
+Filebeat installation in ec2-server
+wget https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-oss-7.3.2-i686.rpm
+ wget https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-oss-7.3.2-x86_64.rpm--- for x86-64
+rpm -ivh filebeat-oss-7.3.2-i686.rpm
+
+This will create kernel related error to solve this install the below
+yum install glibc.i686
+
+There will another error related to ilm where we need disable it in the filebeat.yml
+setup.ilm.enabled: false
+
+
+
+Below is the configration of the filbeat.yml
+--------------------------------------------
+filebeat
+	- type: log
+
+  # Change to true to enable this input configuration.
+  enabled: true
+
+  # Paths that should be crawled and fetched. Glob based paths.
+  paths:
+    -  /var/log/httpd/access_log
+    - /var/log/messages
+    - /var/log/monit.log
+    - /var/log/httpd/error_log
+    #- c:\programdata\elasticsearch\logs\*
+
+setup.ilm.enabled: false
+
+
+
+output.elasticsearch:
+  hosts: ["https://XXXXXXXXXXXXXXXX.ap-south-1.es.amazonaws.com:443"]
+
+  # Optional protocol and basic auth credentials.
+  protocol: "https"
+  #username: "elastic"
+  #password: "changeme"
+
+
+ #Restart the service
+ Systemctl restart filebeat
