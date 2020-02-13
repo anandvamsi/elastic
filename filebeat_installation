@@ -42,3 +42,6 @@ output.elasticsearch:
 
  #Restart the service
  Systemctl restart filebeat
+
+#To test the installation
+filebeat test config -c filebeat.yml
