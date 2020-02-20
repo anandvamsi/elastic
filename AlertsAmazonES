@@ -1,0 +1,73 @@
+How to Create Alerts in the Amazon ES cluster
+
+Here we need to intergrate the AWS ES with SNS to set up Alerting.
+
+Presteps:
+step a:
+	Create a SNS topic and create a mail id subscription
+	copy the URN
+Step b:
+- 	Create a ec2 role with below policy 
+	{
+  "Version": "2012-10-17",
+  "Statement": [{
+    "Effect": "Allow",
+    "Action": "sns:Publish",
+    "Resource": "<sns-topic-arn>"
+  }]
+}
+
+Copy the SNS ARN which was created in the step 1 to Step 2
+
+
+- Click the trust relationship
+
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "es.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+
+
+Step 2:
+		Login to Kibana
+		select the Alerting option right side top corner else left navigation plane
+step 3:
+		click the monitor
+			- Create monitor
+			- Use query approch if you want to search the data
+			sameple query 
+			{
+    "query": {
+        "match": {
+            "firstname": {
+                "query": "anand",
+                "operator": "OR",
+                "prefix_length": 0,
+                "max_expansions": 50,
+                "fuzzy_transpositions": true,
+                "lenient": false,
+                "zero_terms_query": "NONE",
+                "auto_generate_synonyms_phrase_query": true,
+                "boost": 1
+            }
+        }
+    }
+}
+
+and hit Run to see the results.
+
+- Create Triggers
+Now add triggers based on the ctx conditions.
+Add the ctx condition  and click the run button to evaulate the contion.
+
+-Create destinations
+In the destination section , we need to select the AWS SNS and add the copy the 
+ARN of SNS as well as the ARN of the role created  in the step2
