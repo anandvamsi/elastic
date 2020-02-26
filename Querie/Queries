@@ -132,7 +132,31 @@ GET my_index/_search
   }
 }
 
+#Query elasticserach data for alerts 
 
+GET winlogbeat-*/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+        "match": {
+          "message": "The WMI Performance Adapter service entered the stopped state"
+                }
+        },
+      {          
+      "range": {
+      "@timestamp" : {
+      "gte" : "now-10m",
+      "lt" :  "now"
+            }
+        }
+      }
+        
+      ]
+    }
+  }
+}
 
 
 
