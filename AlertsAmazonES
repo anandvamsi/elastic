@@ -71,3 +71,56 @@ Add the ctx condition  and click the run button to evaulate the contion.
 -Create destinations
 In the destination section , we need to select the AWS SNS and add the copy the 
 ARN of SNS as well as the ARN of the role created  in the step2
+
+
+
+Please find the CTX messages
+
+
+//-----------
+Monitor {{ctx.monitor.name}} just entered alert status. Please investigate the issue.
+Hello Team-
+
+A Alert has been triggered in the node {{ctx.results.0.hits.hits.0._source.computer_name}}
+Please find the details::
+
+- Message {{ctx.results.0.hits.hits.0._source.message}}
+- Trigger: {{ctx.trigger.name}}
+- Severity: {{ctx.trigger.severity}}
+- Period start: {{ctx.periodStart}}
+- Period end: {{ctx.periodEnd}}
+----//
+
+for the below Json
+
+{
+    "_shards": {
+        "total": 528,
+        "failed": 0,
+        "successful": 528,
+        "skipped": 527
+    },
+    "hits": {
+        "hits": [
+            {
+                "_index": "winlogbeat-6.8.6-2020.03.23",
+                "_type": "doc",
+                "_source": {
+                    "process_id": 860,
+                    "computer_name": "vhitraXXXXXXX",
+                    "keywords": [
+                        "Audit Success"
+                    ],
+                    "level": "Information",
+                    "log_name": "Security",
+                    "record_number": "92729996",
+                    "event_data": {
+                        "TargetLogonId": "0x752XX0e7e2",
+                        "LogonType": "3",
+                        "TargetUserName": "ImportService",
+                        "TargetDomainName": "XXXXX",
+                        "TargetUserSid": "S-1-5-21-XXXXX-1159558365-XXXXX-1031"
+                    },
+                    "type": "wineventlog",
+                    "message": XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,
+                    }
