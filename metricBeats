@@ -1,4 +1,6 @@
-Below procedure for install and configure metric beat for AWS Elastic cluster
+Topic
+- Below procedure for install and configure metric beat for AWS Elastic cluster
+- How to change the Data Type
 -------------------------------------------------------------------------------
 
 step 1.Download the metricbeat
@@ -68,3 +70,16 @@ Mar 29 12:32:16 ip-10-80-XX-14 metricbeat: 2020-03-29T12:32:16.509-0600#011INFO#
 step7
 Go to Kibana search for the IP addres
 you will be able to see the logs.
+
+
+How to change the Data Type
+----------------------------------
+
+By default the CPU and memory related metrics will be in the numbers
+It wont be meaningful to see that.
+
+In order to change the number to bytes,
+click the management, and select the required index
+search the field you want alter in the Filter textbox
+there will be pencil symbol at the end of the field,click over there 
+From te format textbox, select the required one and click save field
