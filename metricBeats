@@ -1,0 +1,70 @@
+Below procedure for install and configure metric beat for AWS Elastic cluster
+-------------------------------------------------------------------------------
+
+step 1.Download the metricbeat
+ wget https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-oss-7.6.1-x86_64.rpm
+ 
+step 2. rpm -ivh metricbeat-oss-7.6.1-x86_64.rpm
+
+step3
+metricbeat configuration file will be the location 
+/etc/metricbeat/metricbeat.yml
+
+configuration
+##Note:: Here we are using nginx reverse proxy in between metricbeat agent node and Elasticsearch server which require authentication
+10.80.XX.33 is the nginx reverse proxy node and certificates 
+all the elasticsearch and kibana request is forwarded to nginx node which will proxy to AWS elasticsearch server
+This is kept for security purpose.
+
+metricbeat.config.modules:
+  path: ${path.config}/modules.d/*.yml
+  reload.enabled: false
+
+setup.template.settings:
+  index.number_of_shards: 1
+  index.codec: best_compression
+
+setup.kibana:
+   host: "https://10.80.XX.33:443/_plugin/kibana"
+   ssl.enabled: true
+   username: "elkuser"
+   password: "0XXXXXX]$Z"
+   ssl.certificate: "/home/ec2-user/localhost.crt"
+   ssl.key: "/home/ec2-user/localhost.key"
+   ssl.verification_mode: none
+
+output.elasticsearch:
+  hosts: ["https://10.80.224.33:443/"]
+  protocol: "https"
+  username: "elkuser"
+  password: "XXXZ"
+  ssl.certificate: "/home/ec2-user/localhost.crt"
+  ssl.key: "/home/ec2-user/localhost.key"
+  rest.action.multi.allow_explicit_index: true
+  ssl.verification_mode: none
+
+monitoring.enabled: true
+
+
+step4.
+To enable system module
+metricbeat modules enable system
+
+step5.
+systemctl enable elasticsearch
+systemctl start elasticsearch
+
+step6
+To test the configration
+log]# metricbeat test config
+Config OK
+
+All the messages are you will be able to see below kind of messages.
+/var/log/messages
+Mar 29 12:32:06 ip-10-80-XXX-14 metricbeat: 2020-03-29T12:32:06.945-0600#011INFO#011[monitoring]#011log/log.go:145#011Non-zero metrics in the last 30s#011{"monitoring": {"metrics": {"beat":{"cpu":{"system":{"ticks":64140,"time":{"ms":109}},"total":{"ticks":125120,"time":{"ms":206},"value":125120},"user":{"ticks":60980,"time":{"ms":97}}},"handles":{"limit":{"hard":4096,"soft":1024},"open":8},"info":{"ephemeral_id":"ed1cf87c-cf51-498f-9659-794e63afcebd","uptime":{"ms":19440055}},"memstats":{"gc_next":9241248,"memory_alloc":6357912,"memory_total":17222957272,"rss":-679936},"runtime":{"goroutines":46}},"libbeat":{"config":{"module":{"running":0}},"output":{"events":{"acked":46,"batches":3,"total":46},"read":{"bytes":10881},"write":{"bytes":42383}},"pipeline":{"clients":3,"events":{"active":0,"published":46,"total":46},"queue":{"acked":46}}},"metricbeat":{"system":{"cpu":{"events":3,"success":3},"load":{"events":3,"success":3},"memory":{"events":3,"success":3},"network":{"events":6,"success":6},"process":{"events":25,"success":25},"process_summary":{"events":3,"success":3},"socket_summary":{"events":3,"success":3}}},"system":{"load":{"1":0.04,"15":0.05,"5":0.05,"norm":{"1":0.04,"15":0.05,"5":0.05}}}}}}
+Mar 29 12:32:16 ip-10-80-XX-14 metricbeat: 2020-03-29T12:32:16.509-0600#011INFO#011elasticsearch/client.go:757#011Attempting to connect to Elasticsearch version 6.8.0
+
+
+step7
+Go to Kibana search for the IP addres
+you will be able to see the logs.
