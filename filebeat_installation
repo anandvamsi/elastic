@@ -12,6 +12,7 @@ setup.ilm.enabled: false
 
 
 Below is the configration of the filbeat.yml
+Note: Below Deployment is for AWS elasticsearch which only supports beats of OSS version 
 --------------------------------------------
 filebeat
 	- type: log
