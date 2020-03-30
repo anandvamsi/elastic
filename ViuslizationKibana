@@ -1,0 +1,25 @@
+Topic
+
+#To set up the Dashbords in kibana for metric beats.
+
+step1:
+Make sure you have metricbeats documents ingested to ES
+Assume name of the index metribeat
+
+Step2:
+Click the visualize then "+" button to add the new visualization
+select the visualization type
+
+Step3.
+Under the "select Index" select the index name in this case its metricbeat.
+
+Step4
+This will show the simple visualization graph.
+In the Left navigation pane, Under the Buckets
+click the "split slices"
+
+In the Aggration drop down :- select "Terms"
+Field: select the fieldname like host.name
+Order by: metric: count
+
+Mention the Custom Label  and click Play button on the top
