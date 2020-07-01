@@ -1,0 +1,35 @@
+Filebeat configration for creating a different index ES based on types type
+----------------------------------------------------------------------------
+>>>filbeat.yml
+
+>>Input section 
+filebeat.inputs:
+- type: log
+  enabled: true
+  paths:
+    - /var/log/*.log
+
+- type: log
+  enabled: true
+  paths:
+    - /var/log/secure
+  fields:
+    type: secure
+
+- type: log
+  enabled: true
+  paths:
+    - /var/log/messages
+  fields:
+    type: messages
+
+>>>Include below 2 lines 
+setup.template.name: "index-%{[beat.version]}"
+setup.template.pattern: "index-%{[beat.version]}-*"
+
+
+>>output section 
+#-------------------------- Elasticsearch output ------------------------------
+output.elasticsearch:
+  #index: "index-%{[beat.version]}-%{[fields.type]:other}-%{+yyyy.MM.dd}"
+  index:  "%{[fields.type]}-%{[agent.version]}-%{+yyyy.
